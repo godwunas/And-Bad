@@ -10,8 +10,8 @@ public:
 	player_interface() : cards_on_hand(0) {}
 	virtual ~player_interface() {}
 private:
-	player_interface(const player_interface&);
-	player_interface& operator=(const player_interface&);
+	player_interface(const player_interface&) = delete;
+	player_interface& operator=(const player_interface&) = delete;
 
 public:
 	void to_get_card(card_interface&& card) { cards_on_hand.push_back(std::move(card)); }
