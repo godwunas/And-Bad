@@ -30,6 +30,7 @@ class card_interface{
 	};
 
 public:
+	card_interface() :card_info_(0) {}
 	explicit card_interface(uint16_t&& card_info) :card_info_(card_info) {}
 	~card_interface() {}
 
@@ -51,6 +52,9 @@ public:
  
  		return *this;
  	}
+
+	friend bool operator<(const card_interface& lhs, const card_interface& rhs);
+	friend bool operator==(const card_interface& lhs, const card_interface& rhs);
 		
 	bool is_two()	const { return card_info_ & card_nums::two; }
 	bool is_three() const { return card_info_ & card_nums::three; }
@@ -74,5 +78,13 @@ public:
 private:	
 	uint16_t card_info_;
 };
+
+bool operator<(const card_interface& lhs, const card_interface& rhs){
+	return ((lhs.card_info_ << 4) < (rhs.card_info_ << 4));
+}
+
+bool operator==(const card_interface& lhs, const card_interface& rhs){
+	return (lhs.card_info_ & rhs.card_info_);
+}
 
 #endif
