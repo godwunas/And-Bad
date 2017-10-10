@@ -4,7 +4,7 @@
 #include <cstdint>
 
 class card_interface{
-public:
+protected:
 	enum card_nums{		
 		two		= 0x000000,
 		three	= 0x000001,
@@ -30,6 +30,7 @@ public:
 		piques	 = 0x000004,//пики
 	};
 
+public:
 	card_interface() :card_num_(0), card_suit_(0) {}
 	explicit card_interface(uint16_t&& card_num, uint16_t&& card_suit) :card_num_(card_num), card_suit_(card_suit) {}
 	~card_interface() {}
@@ -86,8 +87,11 @@ public:
 	bool is_ceurs()		const noexcept { return card_suit_ & suits::ceurs; }
 	bool is_piques()	const noexcept { return card_suit_ & suits::piques; }
 
-	inline uint16_t get_first_card32_num() const noexcept{ return card_nums::six; }
-	inline uint16_t get_first_card52_num() const noexcept{ return card_nums::two; }
+	static inline uint16_t get_first_card32_num() noexcept{ return card_nums::six; }
+	static inline uint16_t get_first_card52_num() noexcept{ return card_nums::two; }
+	static inline uint16_t get_last_card_num() noexcept { return card_nums::tuz; }
+	static inline uint16_t get_suits_first() noexcept { return suits::trefles; }
+	static inline uint16_t get_suits_last() noexcept { return suits::piques; }
 	
 private:	
 	uint16_t card_num_  : 12;
