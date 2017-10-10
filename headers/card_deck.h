@@ -22,13 +22,15 @@ uint16_t card_36[normal_mode] = {card::six|suits::trefles, card::six | suits::pi
 								 card::roi | suits::trefles, card::roi | suits::piques, card::roi | suits::ceurs, card::roi | suits::carreaux,
 								 card::tuz | suits::trefles, card::tuz | suits::piques, card::tuz | suits::ceurs, card::tuz | suits::carreaux };
 
+class card_deck_destroy;
+
 //колода карт в виде синглтона
 class card_deck{
 public:
 	static card_deck& card_deck::getInstance(const card_count count_card);
 
 private:
-	card_deck(const card_count count) : card_count_(count);
+	card_deck(const card_count count);
 	~card_deck() {}
 	card_deck& operator=(card_deck&& op) = delete;
 	card_deck operator=(card_deck& op) = delete;
@@ -49,7 +51,7 @@ class card_deck_destroy {
 private:
 	card_deck* single_deck;
 public:
-	~card_deck_destroy() {};
+	~card_deck_destroy();
 	void initialize(card_deck* card_deck_ptr);
 };
 #endif

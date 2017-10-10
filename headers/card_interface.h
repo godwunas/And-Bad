@@ -24,14 +24,14 @@ public:
 
 	//масть
 	enum suits{
-		trefles	 = 0x001000,//треф
-		carreaux = 0x002000,//бубны
-		ceurs	 = 0x004000,//червы
-		piques	 = 0x008000,//пики
+		trefles	 = 0x000000,//треф
+		carreaux = 0x000001,//бубны
+		ceurs	 = 0x000002,//червы
+		piques	 = 0x000004,//пики
 	};
 
-	card_interface() :card_info_(0) {}
-	explicit card_interface(uint16_t&& card_info) :card_info_(card_info) {}
+	card_interface() :card_num_(0), card_suit_(0) {}
+	explicit card_interface(uint16_t&& card_num, uint16_t&& card_suit) :card_num_(card_num), card_suit_(card_suit) {}
 	~card_interface() {}
 
 private:
@@ -39,49 +39,59 @@ private:
 	card_interface& operator=(const card_interface&) = delete;
 
 public:
- 	card_interface(card_interface&& other)
-		:card_info_(0){
-		std::swap(card_info_, other.card_info_);
+ 	card_interface(card_interface&& other) {
+		card_num_ = other.card_num_;
+		other.card_num_ = 0;
+		
+		card_suit_ = other.card_suit_;
+		other.card_suit_;
  	}
 
  	card_interface& operator=(card_interface&& other){
  		if (this != &other){
-			card_info_ = 0;
-			std::swap(card_info_, other.card_info_);
+			card_num_ = other.card_num_;
+			other.card_num_ = 0;
+
+			card_suit_ = other.card_suit_;
+			other.card_suit_;
  		}
  
  		return *this;
  	}
 
 	friend bool operator<(const card_interface& lhs, const card_interface& rhs) {
-		return ((lhs.card_info_ << 4) < (rhs.card_info_ << 4));
+		return (lhs.card_num_ < rhs.card_num_);
 	}
 
 	friend bool operator==(const card_interface& lhs, const card_interface& rhs) {
-		return (lhs.card_info_ & rhs.card_info_);
+		return ((lhs.card_num_ & rhs.card_num_) && (lhs.card_suit_ & lhs.card_suit_));
 	}
+	
+	bool is_two()	const noexcept { return card_num_ & card_nums::two; }
+	bool is_three() const noexcept { return card_num_ & card_nums::three; }
+	bool is_four()	const noexcept { return card_num_ & card_nums::four; }
+	bool is_five()	const noexcept { return card_num_ & card_nums::five; }
+	bool is_six()	const noexcept { return card_num_ & card_nums::six; }
+	bool is_seven() const noexcept { return card_num_ & card_nums::seven; }
+	bool is_eigth() const noexcept { return card_num_ & card_nums::eigth; }
+	bool is_nine()	const noexcept { return card_num_ & card_nums::nine; }
+	bool is_ten()	const noexcept { return card_num_ & card_nums::ten; }
+	bool is_valet() const noexcept { return card_num_ & card_nums::valet; }
+	bool is_dame()	const noexcept { return card_num_ & card_nums::dame; }
+	bool is_roi()	const noexcept { return card_num_ & card_nums::roi; }
+	bool is_tuz()	const noexcept { return card_num_ & card_nums::tuz; }
 
-	bool is_two()	const noexcept { return card_info_ & card_nums::two; }
-	bool is_three() const noexcept { return card_info_ & card_nums::three; }
-	bool is_four()	const noexcept { return card_info_ & card_nums::four; }
-	bool is_five()	const noexcept { return card_info_ & card_nums::five; }
-	bool is_six()	const noexcept { return card_info_ & card_nums::six; }
-	bool is_seven() const noexcept { return card_info_ & card_nums::seven; }
-	bool is_eigth() const noexcept { return card_info_ & card_nums::eigth; }
-	bool is_nine()	const noexcept { return card_info_ & card_nums::nine; }
-	bool is_ten()	const noexcept { return card_info_ & card_nums::ten; }
-	bool is_valet() const noexcept { return card_info_ & card_nums::valet; }
-	bool is_dame()	const noexcept { return card_info_ & card_nums::dame; }
-	bool is_roi()	const noexcept { return card_info_ & card_nums::roi; }
-	bool is_tuz()	const noexcept { return card_info_ & card_nums::tuz; }
+	bool is_trefles()	const noexcept { return card_suit_ & suits::trefles; }
+	bool is_carreaux()	const noexcept { return card_suit_ & suits::carreaux; }
+	bool is_ceurs()		const noexcept { return card_suit_ & suits::ceurs; }
+	bool is_piques()	const noexcept { return card_suit_ & suits::piques; }
 
-	bool is_trefles()	const noexcept { return card_info_ & suits::trefles; }
-	bool is_carreaux()	const noexcept { return card_info_ & suits::carreaux; }
-	bool is_ceurs()		const noexcept { return card_info_ & suits::ceurs; }
-	bool is_piques()	const noexcept { return card_info_ & suits::piques; }
-
+	inline uint16_t get_first_card32_num() const noexcept{ return card_nums::six; }
+	inline uint16_t get_first_card52_num() const noexcept{ return card_nums::two; }
+	
 private:	
-	uint16_t card_info_;
+	uint16_t card_num_  : 12;
+	uint16_t card_suit_ : 4;
 };
 
 #endif
