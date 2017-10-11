@@ -98,12 +98,12 @@ public:
 	static inline uint16_t get_suits_last() noexcept { return suits::piques; }
 
 	inline void set_owner_player(player_interface* pl) { owner_player_ = pl; }
-	const player_interface* get_owner_player() const { return owner_player_; }
+	player_interface* get_owner_player() const { return owner_player_; }
 	
 private:	
 	uint16_t card_num_;
 	uint16_t card_suit_;
-	const player_interface* owner_player_;
+	player_interface* owner_player_;
 };
 
 #endif

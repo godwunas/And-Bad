@@ -2,6 +2,6 @@
 
 namespace drinker{
 	void ai_player::make_move() {
-		//собственно если запилить стол, то можо смотреть, если карт нет, или они четные(к примеру) то ход "атаковать", а елси нечетные, то время защищаться
+		playing_table::getInstance()->to_get_card(to_send_card(0));
 	}
 }
