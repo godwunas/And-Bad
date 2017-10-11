@@ -1,5 +1,7 @@
+#include "stdafx.h"
 #include "card_deck.h"
 #include <random>
+#include <algorithm>
 
 card_deck* card_deck::single_deck = nullptr;
 card_deck_destroy card_deck::card_deck_destr;
@@ -11,7 +13,7 @@ card_deck_destroy::~card_deck_destroy()
 }
 
 card_deck::card_deck(const card_count count) : card_count_(count) {
-	cards_on_deck.reserve(static_cast<size_t>(card_count_));
+	cards_on_hand.reserve(static_cast<size_t>(card_count_));
 }
 
 void card_deck_destroy::initialize(card_deck* card_deck_ptr)
@@ -34,11 +36,11 @@ void card_deck::card_add(){
 	
 	for (auto i = card_count_ == normal_mode ? c_i::get_first_card32_num() : c_i::get_first_card52_num(); i <= c_i::get_last_card_num(); i <<= 1)
 		for (auto j = c_i::get_suits_first(); i <= c_i::get_suits_last(); j <<= 1)
-				cards_on_deck.emplace_back(c_i(i | j));
+			cards_on_hand.emplace_back(c_i(std::move(i), std::move(j)));
 }
 
 void card_deck::card_mix() {
 	std::random_device rd;
 	std::mt19937 mt(rd());
-	std::shuffle(cards_on_deck.begin(), cards_on_deck.end(), mt);
+	std::shuffle(cards_on_hand.begin(), cards_on_hand.end(), mt);
 }

@@ -1,6 +1,6 @@
 #ifndef CARD_DECK_H
 #define CARD_DECK_H
-#include "card_interface.h"
+#include "card_holder_interface.h"
 #include <vector>
 #include <memory>
 
@@ -11,8 +11,8 @@ enum card_count {
 
 class card_deck_destroy;
 
-//колода карт в виде синглтона
-class card_deck{
+//колода карт в виде синглтона + использование общего интерфейса отдачи получения карты через card_holder_interface
+class card_deck : public card_holder_interface{
 public:
 	static card_deck& card_deck::getInstance(const card_count count_card);
 
@@ -29,8 +29,9 @@ private:
 	static card_deck_destroy card_deck_destr;
 	friend class card_deck_destroy;
 
-	std::vector<card_interface> cards_on_deck;
+	//перемешиваем карты
 	void card_mix();
+	//добавляем нужное кол-во карт
 	void card_add();
 };
 

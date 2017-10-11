@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "drinker_game.h"
 #include "player_interface.h"
 #include "card_deck.h"
