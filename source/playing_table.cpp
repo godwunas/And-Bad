@@ -27,8 +27,10 @@ namespace drinker {
 	}
 
 	playing_table& playing_table::getInstance() {
-		if (single_play_table_ == nullptr)
+		if (single_play_table_ == nullptr){
 			single_play_table_ = new playing_table;
+			destroy_play_table_.instance(single_play_table_);
+		}
 
 		return *single_play_table_;
 	}
