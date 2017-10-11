@@ -12,7 +12,7 @@ card_deck_destroy::~card_deck_destroy()
 }
 
 card_deck::card_deck(const card_count count) : card_count_(count) {
-	cards_on_hand.reserve(static_cast<size_t>(card_count_));
+	cards_on_hand.resize(static_cast<size_t>(card_count_));
 }
 
 void card_deck_destroy::initialize(card_deck* card_deck_ptr)

@@ -14,7 +14,7 @@ class card_deck_destroy;
 //колода карт в виде синглтона + использование общего интерфейса отдачи получения карты через card_holder_interface
 class card_deck : public card_holder_interface{
 public:
-	static card_deck& card_deck::getInstance(const card_count count_card);
+	static card_deck& getInstance(const card_count count_card);
 
 private:
 	card_deck(const card_count count);
