@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "card_deck.h"
 #include <random>
 #include <algorithm>

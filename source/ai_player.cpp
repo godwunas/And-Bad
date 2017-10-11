@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ai_player.h"
 
 namespace drincker{

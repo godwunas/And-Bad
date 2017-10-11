@@ -24,10 +24,10 @@ protected:
 
 	//масть
 	enum suits{
-		trefles	 = 0x000001,//треф
-		carreaux = 0x000002,//бубны
-		ceurs	 = 0x000004,//червы
-		piques	 = 0x000008,//пики
+		trefles	 = 0,//треф
+		carreaux = 1,//бубны
+		ceurs	 = 2,//червы
+		piques	 = 3,//пики
 	};
 
 public:
@@ -60,12 +60,14 @@ public:
  		return *this;
  	}
 
+	//сравнение позиции	
 	friend bool operator<(const card_interface& lhs, const card_interface& rhs) {
 		return (lhs.card_num_ < rhs.card_num_);
 	}
 
+	//сравнение рубашки(масти)
 	friend bool operator==(const card_interface& lhs, const card_interface& rhs) {
-		return ((lhs.card_num_ & rhs.card_num_) && (lhs.card_suit_ & lhs.card_suit_));
+		return (lhs.card_suit_ == rhs.card_suit_);
 	}
 	
 	bool is_two()	const noexcept { return card_num_ & card_nums::two ? true : false; }
@@ -95,7 +97,7 @@ public:
 	
 private:	
 	uint16_t card_num_  : 13;
-	uint16_t card_suit_ : 5;
+	uint16_t card_suit_ : 2;
 };
 
 #endif
