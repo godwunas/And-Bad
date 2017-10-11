@@ -11,7 +11,7 @@ namespace drinker {
 	}
 
 	void destroy_play_table::instance(playing_table* play_table){
-		if (play_table_ != nullptr && play_table != nullptr)
+		if (play_table_ == nullptr && play_table != nullptr)
 			play_table_ = play_table;
 	}
 
