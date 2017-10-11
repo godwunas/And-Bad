@@ -2,7 +2,7 @@
 #define AI_PLAYER_H
 #include "player_interface.h"
 
-namespace drincker{
+namespace drinker{
 	class ai_player : public player_interface{
 	public:
 		ai_player() = default;

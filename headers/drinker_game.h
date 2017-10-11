@@ -1,12 +1,12 @@
 #ifndef DRINKER_GAME_H
 #define DRINKER_GAME_H
 #include <vector>
-#include <memory>
 
 class player_interface;
 class card_deck;
+class playing_table;
 
-namespace drincker{
+namespace drinker{
 	class drinker_game{
 		enum players{
 			USER_PLAYER = 0,
@@ -26,8 +26,9 @@ namespace drincker{
 		void start_game();
 
 	private:
-		std::vector<std::unique_ptr<player_interface>> players_;
-		std::unique_ptr<card_deck> cur_card_deck_;//не уверен что надо делать указатель, но так можно из заголовка вынести реализацию же...
+		std::vector<std::shared_ptr<player_interface>> players_;
+		card_deck* cur_card_deck_;//не уверен что надо делать указатель, но так можно из заголовка вынести реализацию же...
+		playing_table* playing_table_;
 	};
 }
 

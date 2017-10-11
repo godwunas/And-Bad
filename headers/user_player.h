@@ -2,7 +2,7 @@
 #define USER_PLAYER_H
 #include "player_interface.h"
 
-namespace drincker{
+namespace drinker{
 	class user_player : public player_interface{
 	public:
 		user_player() = default;

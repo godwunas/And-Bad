@@ -3,6 +3,8 @@
 #include <utility>
 #include <cstdint>
 
+class player_interface;
+
 class card_interface{
 protected:
 	enum card_nums{		
@@ -24,15 +26,15 @@ protected:
 
 	//масть
 	enum suits{
-		trefles	 = 0,//треф
-		carreaux = 1,//бубны
-		ceurs	 = 2,//червы
-		piques	 = 3,//пики
+		trefles		= 0x000001,//треф
+		carreaux	= 0x000002,//бубны
+		ceurs		= 0x000004,//червы
+		piques		= 0x000008,//пики
 	};
 
 public:
-	card_interface() :card_num_(0), card_suit_(0) {}
-	explicit card_interface(uint16_t&& card_num, uint16_t&& card_suit) :card_num_(card_num), card_suit_(card_suit) {}
+	card_interface() :card_num_(0), card_suit_(0), owner_player_(nullptr) {}
+	explicit card_interface(uint16_t&& card_num, uint16_t&& card_suit) :card_num_(card_num), card_suit_(card_suit), owner_player_(nullptr) {}
 	~card_interface() {}
 
 private:
@@ -67,7 +69,7 @@ public:
 
 	//сравнение рубашки(масти)
 	friend bool operator==(const card_interface& lhs, const card_interface& rhs) {
-		return (lhs.card_suit_ == rhs.card_suit_);
+		return (lhs.card_suit_ & rhs.card_suit_ ? true : false);
 	}
 	
 	bool is_two()	const noexcept { return card_num_ & card_nums::two ? true : false; }
@@ -94,10 +96,14 @@ public:
 	static inline uint16_t get_last_card_num() noexcept { return card_nums::tuz; }
 	static inline uint16_t get_suits_first() noexcept { return suits::trefles; }
 	static inline uint16_t get_suits_last() noexcept { return suits::piques; }
+
+	inline void set_owner_player(player_interface* pl) { owner_player_ = pl; }
+	const player_interface* get_owner_player() const { return owner_player_; }
 	
 private:	
-	uint16_t card_num_  : 13;
-	uint16_t card_suit_ : 2;
+	uint16_t card_num_;
+	uint16_t card_suit_;
+	const player_interface* owner_player_;
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include "ai_player.h"
 
-namespace drincker{
+namespace drinker{
 	void ai_player::make_move() {
 		//собственно если запилить стол, то можо смотреть, если карт нет, или они четные(к примеру) то ход "атаковать", а елси нечетные, то время защищаться
 	}
