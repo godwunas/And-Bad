@@ -3,7 +3,7 @@
 #include "player_interface.h"
 
 namespace drinker{
-	class ai_player : public player_interface{
+	class ai_player : public ::player_interface{
 	public:
 		ai_player() = default;
 		virtual ~ai_player() = default;

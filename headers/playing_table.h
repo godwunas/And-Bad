@@ -4,11 +4,12 @@
 #include <vector>
 #include <memory>
 
-class player_interface;
-class playing_table;
 class card_deck;
+class player_interface;
 
 namespace drinker{
+	class playing_table;
+
 	class destroy_play_table{
 	private:
 		playing_table* play_table_;
@@ -40,7 +41,7 @@ namespace drinker{
 		friend class destroy_play_table;
  	public:
 		player_interface* get_winner();
-		playing_table& getInstance();
+		static playing_table& getInstance();
 		void start_game();
 	};
 }

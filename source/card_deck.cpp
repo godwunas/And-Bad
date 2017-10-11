@@ -24,10 +24,22 @@ void card_deck_destroy::initialize(card_deck* card_deck_ptr)
 card_deck& card_deck::getInstance(const card_count count_card){
 	if (single_deck == nullptr){
 		single_deck = new card_deck(count_card);
+		heap_out_card_ = new heap_out_cards;
 		card_deck_destr.initialize(single_deck);
 	}
 
 	return *single_deck;
+}
+
+card_deck::~card_deck() {
+	if (heap_out_card_ != nullptr)
+		delete heap_out_card_;
+}
+
+void card_deck::InstanceHeapCards(heap_out_cards* heap_cards)
+{
+	if (heap_out_card_ == nullptr && heap_cards != nullptr)
+		heap_out_card_ = heap_cards;
 }
 
 void card_deck::card_add(){

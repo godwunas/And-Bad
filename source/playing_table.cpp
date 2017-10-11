@@ -21,7 +21,7 @@ namespace drinker {
 	
 	playing_table::playing_table()
 		:players_(players::PLAYER_COUNT)
-		, cur_card_deck_(&(card_deck::getInstance(normal_mode))){
+		, cur_card_deck_(&(::card_deck::getInstance(normal_mode))){
 		players_[USER_PLAYER].reset(new user_player);
 		players_[AI_PLAYER].reset(new ai_player);
 	}

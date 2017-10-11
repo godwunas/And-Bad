@@ -3,7 +3,7 @@
 #include "player_interface.h"
 
 namespace drinker{
-	class user_player : public player_interface{
+	class user_player : public ::player_interface{
 	public:
 		user_player() = default;
 		virtual ~user_player() = default;
@@ -11,7 +11,7 @@ namespace drinker{
 		user_player(const user_player&) = delete;
 		user_player& operator =(const user_player&) = delete;
 	public:
-		void make_move() override;
+		void make_move();
 	};
 }
 
