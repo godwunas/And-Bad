@@ -36,6 +36,8 @@ private:
 	void card_mix();
 	//добавляем нужное кол-во карт
 	void card_add();
+	//обновляем колоду и сразу перемешиваем
+	void reset();
 };
 
 class card_deck_destroy {
