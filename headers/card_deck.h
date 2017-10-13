@@ -15,7 +15,7 @@ class heap_out_cards;
 //колода карт в виде синглтона + использование общего интерфейса отдачи получения карты через card_holder_interface
 class card_deck : public card_holder_interface{
 public:
-	static card_deck& getInstance(const card_count count_card);
+	static card_deck& getInstance(const card_count count_card = normal_mode);
 	static heap_out_cards& GetHeapOutCard();
 	static card_count& get_card_count_deck() { return card_count_;  }
 

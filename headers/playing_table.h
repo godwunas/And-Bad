@@ -37,12 +37,14 @@ namespace drinker{
 		static playing_table* single_play_table_;
 		static destroy_play_table destroy_play_table_;
 		std::vector<std::unique_ptr<player_interface>> players_;
-		card_deck* cur_card_deck_;
+
+		player_interface* last_active_pl_;
 		friend class destroy_play_table;
  	public:
 		player_interface* get_winner();
 		static playing_table& getInstance();
 		void start_game();
+		void give_out_cards();
 	};
 }
 

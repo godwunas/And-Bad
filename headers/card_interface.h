@@ -2,8 +2,17 @@
 #define CARD_INTERFACE_H
 #include <utility>
 #include <cstdint>
+#include <string>
 
 class player_interface;
+class card_interface;
+
+struct do_not_have_player_owner : public std::exception {
+	do_not_have_player_owner(const card_interface* const card) :exception(), card_(card), ex_error_("card has no player owner") {}
+
+	const card_interface* card_;
+	std::string ex_error_;
+};
 
 class card_interface{
 protected:
@@ -63,12 +72,16 @@ public:
  	}
 
 	//сравнение позиции	
-	friend bool operator<(const card_interface& lhs, const card_interface& rhs) {
-		return (lhs.card_num_ < rhs.card_num_);
+	friend bool is_equal_pos(const card_interface& lhs, const card_interface& rhs) noexcept{
+		return (lhs.card_num_ & rhs.card_num_ ? true : false);
+	}
+
+	friend bool is_less_pos(const card_interface& lhs, const card_interface& rhs) noexcept{
+		return lhs.card_num_ < rhs.card_num_;
 	}
 
 	//сравнение рубашки(масти)
-	friend bool operator==(const card_interface& lhs, const card_interface& rhs) {
+	friend bool is_equal_suit(const card_interface& lhs, const card_interface& rhs) noexcept {
 		return (lhs.card_suit_ & rhs.card_suit_ ? true : false);
 	}
 	
@@ -97,8 +110,16 @@ public:
 	static inline uint16_t get_suits_first() noexcept { return suits::trefles; }
 	static inline uint16_t get_suits_last() noexcept { return suits::piques; }
 
-	inline void set_owner_player(player_interface* pl) { owner_player_ = pl; }
-	player_interface* get_owner_player() const { return owner_player_; }
+	void set_owner_player(player_interface* pl) throw (do_not_have_player_owner){
+		if (pl == nullptr)
+			throw do_not_have_player_owner(this);
+		owner_player_ = pl; 
+	}
+	player_interface* get_owner_player() const throw (do_not_have_player_owner){
+		if (owner_player_ == nullptr)
+			throw do_not_have_player_owner(this);
+		return owner_player_; 
+	}
 	
 private:	
 	uint16_t card_num_;

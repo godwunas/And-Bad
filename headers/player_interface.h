@@ -1,6 +1,7 @@
 #ifndef PLAYER_INTERFACE_H
 #define PLAYER_INTERFACE_H
 #include "card_holder_interface.h"
+#include "card_deck.h"
 
 class player_interface : public card_holder_interface{
 
@@ -13,8 +14,9 @@ private:
 
 public:
 	virtual void make_move() = 0;
+
 	inline bool	is_active_player() const { return active_player_; }
-	void set_inactive_player() { active_player_ = false; }
+	inline void set_inactive_player() noexcept { active_player_ = false; }
 
 	virtual void to_get_card(card_interface&& card, push_mode push_pos) override{
 		card.set_owner_player(this);

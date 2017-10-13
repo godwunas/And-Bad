@@ -32,6 +32,11 @@ public:
 		return std::move(temp);
 	}
 
+	void move_all_cards_to(card_holder_interface* owner, const push_mode& mode){
+		std::for_each(cards_on_hand.begin(), cards_on_hand.end(), [&owner, &mode](card_interface& card) { owner->to_get_card(std::move(card), mode); });
+		cards_on_hand.clear();
+	}
+
 protected:
 	std::deque<card_interface> cards_on_hand;
 };

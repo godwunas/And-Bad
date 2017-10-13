@@ -67,8 +67,7 @@ void card_deck::reset(){
 		card_add();
 		add_card_ = true;
 	}
-	if (heap_out_card_ != nullptr){
-		std::for_each(heap_out_card_->cards_on_hand.begin(), heap_out_card_->cards_on_hand.end(), [](card_interface& card){single_deck->to_get_card(std::move(card), push_mode::PUSH_BACK); });
-	}
+	if (heap_out_card_ != nullptr)
+		heap_out_card_->move_all_cards_to(single_deck, push_mode::PUSH_BACK);
 	card_mix();
 }

@@ -2,6 +2,7 @@
 #include "user_player.h"
 #include "ai_player.h"
 #include "card_deck.h"
+#include "card_interface.h"
 
 namespace drinker {
 
@@ -20,21 +21,25 @@ namespace drinker {
 
 	
 	playing_table::playing_table()
-		:players_(players::PLAYER_COUNT)
-		, cur_card_deck_(&(::card_deck::getInstance(normal_mode))){
+		:players_(players::PLAYER_COUNT){
 		players_[USER_PLAYER].reset(new user_player);
 		players_[AI_PLAYER].reset(new ai_player);
 	}
 
 	player_interface* playing_table::get_winner(){
 		auto max_card_it = std::max_element(cards_on_hand.begin(), cards_on_hand.end(), [](const card_interface& lhs, const card_interface& rhs) {
-			if (lhs.is_tuz() && rhs.is_six() || lhs < rhs)
+			if (lhs.is_tuz() && rhs.is_six() || is_less_pos(lhs, rhs))
 				return true;
 			else
 				return false;
 		});
 
-		max_card_it->get_owner_player();
+		if (count_if(cards_on_hand.begin(), cards_on_hand.end(), [&max_card_it](const card_interface& card) {
+			return is_equal_pos(*max_card_it, card);
+		}) > 1)
+			return nullptr;		
+		else
+			return max_card_it->get_owner_player();
 	}
 
 	playing_table& playing_table::getInstance() {
@@ -48,13 +53,26 @@ namespace drinker {
 
 	void playing_table::start_game(){
 		auto player_in_game = players_.size();
-		player_interface* last_active_pl = nullptr;
+		last_active_pl_ = nullptr;
+
+		card_deck::getInstance().reset();
+		give_out_cards();
 
 		while (1 < player_in_game){
-			for_each(players_.begin(), players_.end(), [](const std::unique_ptr<player_interface>& pl) { pl->make_move(); });
-			last_active_pl = get_winner();
-			std::for_each(cards_on_hand.begin(), cards_on_hand.end(), [&last_active_pl](card_interface& card) { last_active_pl->to_get_card(std::move(card), push_mode::PUSH_BACK); });
-			cards_on_hand.clear();
+			do{
+				for_each(players_.begin(), players_.end(), [](const std::unique_ptr<player_interface>& pl) { pl->make_move(); });
+				last_active_pl_ = get_winner();
+			} while (last_active_pl_ != nullptr);
+
+			move_all_cards_to(last_active_pl_, push_mode::PUSH_BACK);
+		}
+
+		last_active_pl_->move_all_cards_to(&(card_deck::GetHeapOutCard()), push_mode::PUSH_BACK);
+	}
+
+	void playing_table::give_out_cards(){
+		while (!card_deck::getInstance().is_dont_have_card()){
+			std::for_each(players_.begin(), players_.end(), [](player_interface& pl){ pl.to_get_card(card_deck::getInstance().to_send_card(0), push_mode::PUSH_BACK); });
 		}
 	}
 }
