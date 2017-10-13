@@ -4,6 +4,7 @@
 
 card_deck* card_deck::single_deck = nullptr;
 card_deck_destroy card_deck::card_deck_destr;
+card_count card_deck::card_count_ = card_count::normal_mode;
 
 card_deck_destroy::~card_deck_destroy()
 {
@@ -11,7 +12,8 @@ card_deck_destroy::~card_deck_destroy()
 		delete single_deck;
 }
 
-card_deck::card_deck(const card_count count) : card_count_(count) {
+card_deck::card_deck(const card_count count) :add_card_(false) {
+	card_count_ = count;
 	cards_on_hand.resize(static_cast<size_t>(card_count_));
 }
 
@@ -36,10 +38,12 @@ card_deck::~card_deck() {
 		delete heap_out_card_;
 }
 
-void card_deck::InstanceHeapCards(heap_out_cards* heap_cards)
+heap_out_cards& card_deck::InstanceHeapCards(heap_out_cards* heap_cards)
 {
 	if (heap_out_card_ == nullptr && heap_cards != nullptr)
 		heap_out_card_ = heap_cards;
+
+	return *heap_out_card_;
 }
 
 void card_deck::card_add(){
@@ -57,6 +61,10 @@ void card_deck::card_mix() {
 }
 
 void card_deck::reset(){
+	if (!add_card_){
+		card_add();
+		add_card_ = true;
+	}
 	if (heap_out_card_ != nullptr){
 		std::for_each(heap_out_card_->cards_on_hand.begin(), heap_out_card_->cards_on_hand.end(), [](card_interface& card){single_deck->to_get_card(std::move(card), push_mode::PUSH_BACK); });
 	}
