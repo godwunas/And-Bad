@@ -16,7 +16,7 @@ class heap_out_cards;
 class card_deck : public card_holder_interface{
 public:
 	static card_deck& getInstance(const card_count count_card);
-	static heap_out_cards& InstanceHeapCards(heap_out_cards* heap_cards);
+	static heap_out_cards& GetHeapOutCard();
 	static card_count& get_card_count_deck() { return card_count_;  }
 
 private:
@@ -63,7 +63,5 @@ private:
 	heap_out_cards(const heap_out_cards&) = delete;
 	heap_out_cards(const heap_out_cards&&) = delete;
 	friend class card_deck;
-
-	static heap_out_cards* heap_cards_;
 };
 #endif

@@ -5,6 +5,7 @@
 card_deck* card_deck::single_deck = nullptr;
 card_deck_destroy card_deck::card_deck_destr;
 card_count card_deck::card_count_ = card_count::normal_mode;
+heap_out_cards* card_deck::heap_out_card_ = nullptr;
 
 card_deck_destroy::~card_deck_destroy()
 {
@@ -30,20 +31,21 @@ card_deck& card_deck::getInstance(const card_count count_card){
 		card_deck_destr.initialize(single_deck);
 	}
 
+	GetHeapOutCard();
+
 	return *single_deck;
+}
+
+heap_out_cards& card_deck::GetHeapOutCard(){
+	if (heap_out_card_ == nullptr)
+		heap_out_card_ = new heap_out_cards;
+
+	return *heap_out_card_; 
 }
 
 card_deck::~card_deck() {
 	if (heap_out_card_ != nullptr)
 		delete heap_out_card_;
-}
-
-heap_out_cards& card_deck::InstanceHeapCards(heap_out_cards* heap_cards)
-{
-	if (heap_out_card_ == nullptr && heap_cards != nullptr)
-		heap_out_card_ = heap_cards;
-
-	return *heap_out_card_;
 }
 
 void card_deck::card_add(){
