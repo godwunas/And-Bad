@@ -37,13 +37,16 @@ namespace drinker{
 		static playing_table* single_play_table_;
 		static destroy_play_table destroy_play_table_;
 		std::vector<std::unique_ptr<player_interface>> players_;
-
 		player_interface* last_active_pl_;
+		int inactve_cards_count_;//карты со стола, не учавствующие в сравнении
+
 		friend class destroy_play_table;
  	public:
+		//узнать победителя хода
 		player_interface* get_winner();
 		static playing_table& getInstance();
 		void start_game();
+		//метод раздачи карт игрокам
 		void give_out_cards();
 	};
 }

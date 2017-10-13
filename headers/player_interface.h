@@ -13,15 +13,14 @@ private:
 	player_interface& operator=(const player_interface&) = delete;
 
 public:
+	//метод хода игрока
 	virtual void make_move() = 0;
 
-	inline bool	is_active_player() const { return active_player_; }
-	inline void set_inactive_player() noexcept { active_player_ = false; }
+	inline bool	is_active_player()		const		{ return active_player_; }
+	inline void set_inactive_player()	noexcept	{ active_player_ = false; }
 
-	virtual void to_get_card(card_interface&& card, push_mode push_pos) override{
-		card.set_owner_player(this);
-		card_holder_interface::to_get_card(std::move(card), push_pos);
-	}
+	//переопределенный метод получения карты
+	virtual void to_get_card(card_interface&& card, push_mode push_pos) override;
 
 private:
 	bool	active_player_;

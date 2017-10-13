@@ -15,7 +15,6 @@ card_deck_destroy::~card_deck_destroy()
 
 card_deck::card_deck(const card_count count) :add_card_(false) {
 	card_count_ = count;
-	cards_on_hand.resize(static_cast<size_t>(card_count_));
 }
 
 void card_deck_destroy::initialize(card_deck* card_deck_ptr)
@@ -50,16 +49,16 @@ card_deck::~card_deck() {
 
 void card_deck::card_add(){
 	using c_i = card_interface;
-	
+
 	for (auto i = card_count_ == normal_mode ? c_i::get_first_card32_num() : c_i::get_first_card52_num(); i <= c_i::get_last_card_num(); i <<= 1)
-		for (auto j = c_i::get_suits_first(); i <= c_i::get_suits_last(); j <<= 1)
-			cards_on_hand.emplace_back(c_i(std::move(i), std::move(j)));
+		for (auto j = c_i::get_suits_first(); j <= c_i::get_suits_last(); j <<= 1)
+			cards_on_hand_.emplace_back(c_i(std::move(i), std::move(j)));
 }
 
 void card_deck::card_mix() {
 	std::random_device rd;
 	std::mt19937 mt(rd());
-	std::shuffle(cards_on_hand.begin(), cards_on_hand.end(), mt);
+	std::shuffle(cards_on_hand_.begin(), cards_on_hand_.end(), mt);
 }
 
 void card_deck::reset(){

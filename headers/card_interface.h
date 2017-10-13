@@ -42,49 +42,39 @@ protected:
 	};
 
 public:
-	card_interface() :card_num_(0), card_suit_(0), owner_player_(nullptr) {}
-	explicit card_interface(uint16_t&& card_num, uint16_t&& card_suit) :card_num_(card_num), card_suit_(card_suit), owner_player_(nullptr) {}
-	~card_interface() {}
+	card_interface();
+	card_interface(uint16_t&& card_num, uint16_t&& card_suit);
+	~card_interface() = default;
 
 private:
 	card_interface(const card_interface&) = delete;
 	card_interface& operator=(const card_interface&) = delete;
 
 public:
- 	card_interface(card_interface&& other) {
-		card_num_ = other.card_num_;
-		other.card_num_ = 0;
-		
-		card_suit_ = other.card_suit_;
-		other.card_suit_ = 0;
- 	}
+	card_interface(card_interface&& other);
+	card_interface& operator=(card_interface&& other);
 
- 	card_interface& operator=(card_interface&& other){
- 		if (this != &other){
-			card_num_ = other.card_num_;
-			other.card_num_ = 0;
-
-			card_suit_ = other.card_suit_;
-			other.card_suit_ = 0;
- 		}
- 
- 		return *this;
- 	}
-
-	//сравнение позиции	
+	//сравнение на равенство позиции	
 	friend bool is_equal_pos(const card_interface& lhs, const card_interface& rhs) noexcept{
 		return (lhs.card_num_ & rhs.card_num_ ? true : false);
 	}
 
+	//сравнение на факт вычисления младшей позиции
 	friend bool is_less_pos(const card_interface& lhs, const card_interface& rhs) noexcept{
 		return lhs.card_num_ < rhs.card_num_;
 	}
 
-	//сравнение рубашки(масти)
+	//сравнение на одинаковость рубашки(масти)
 	friend bool is_equal_suit(const card_interface& lhs, const card_interface& rhs) noexcept {
 		return (lhs.card_suit_ & rhs.card_suit_ ? true : false);
 	}
+
+	//необходим для алгоритмов, for example: std::erase
+	friend bool operator==(const card_interface& lhs, const card_interface& rhs) noexcept {
+		return is_equal_pos(lhs, rhs) && is_equal_suit(lhs, rhs);
+	}
 	
+	//метод-идентификации соответствующей позиции карты
 	bool is_two()	const noexcept { return card_num_ & card_nums::two ? true : false; }
 	bool is_three() const noexcept { return card_num_ & card_nums::three ? true : false; }
 	bool is_four()	const noexcept { return card_num_ & card_nums::four ? true : false; }
@@ -99,27 +89,22 @@ public:
 	bool is_roi()	const noexcept { return card_num_ & card_nums::roi ? true : false; }
 	bool is_tuz()	const noexcept { return card_num_ & card_nums::tuz ? true : false; }
 
+	//метод-идентификации соответствующей масти карты
 	bool is_trefles()	const noexcept { return card_suit_ & suits::trefles ? true : false; }
 	bool is_carreaux()	const noexcept { return card_suit_ & suits::carreaux ? true : false; }
 	bool is_ceurs()		const noexcept { return card_suit_ & suits::ceurs ? true : false; }
 	bool is_piques()	const noexcept { return card_suit_ & suits::piques ? true : false; }
 
-	static inline uint16_t get_first_card32_num() noexcept{ return card_nums::six; }
-	static inline uint16_t get_first_card52_num() noexcept{ return card_nums::two; }
-	static inline uint16_t get_last_card_num() noexcept { return card_nums::tuz; }
-	static inline uint16_t get_suits_first() noexcept { return suits::trefles; }
-	static inline uint16_t get_suits_last() noexcept { return suits::piques; }
+	static inline uint16_t get_first_card32_num()	noexcept	{ return card_nums::six; }
+	static inline uint16_t get_first_card52_num()	noexcept	{ return card_nums::two; }
+	static inline uint16_t get_last_card_num()		noexcept	{ return card_nums::tuz; }
+	static inline uint16_t get_suits_first()		noexcept	{ return suits::trefles; }
+	static inline uint16_t get_suits_last()			noexcept	{ return suits::piques; }
 
-	void set_owner_player(player_interface* pl) throw (do_not_have_player_owner){
-		if (pl == nullptr)
-			throw do_not_have_player_owner(this);
-		owner_player_ = pl; 
-	}
-	player_interface* get_owner_player() const throw (do_not_have_player_owner){
-		if (owner_player_ == nullptr)
-			throw do_not_have_player_owner(this);
-		return owner_player_; 
-	}
+	//задать владельца-игрока карты
+	void set_owner_player(player_interface* pl);
+	//узнать владельца-игрока карты
+	player_interface* get_owner_player() const;
 	
 private:	
 	uint16_t card_num_;

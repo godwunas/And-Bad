@@ -2,7 +2,6 @@
 #define CARD_HOLDER_INTERFACE_H
 #include "card_interface.h"
 #include <deque>
-#include <algorithm>
 
 //интерфейс держателся карты(игрок, стол, колода(?), бита)
 class card_holder_interface{
@@ -12,33 +11,24 @@ protected:
 		PUSH_BACK,
 	};
 public:
-	card_holder_interface() : cards_on_hand(0) {}
+	card_holder_interface();
 	virtual ~card_holder_interface() = 0;
 private:
 	card_holder_interface(const card_holder_interface&) = delete;
 	card_holder_interface& operator=(const card_holder_interface&) = delete;
 
 public:
-	virtual void to_get_card(card_interface&& card, push_mode push_pos) { 
-		if (push_pos == push_mode::PUSH_FRONT)
-			cards_on_hand.push_front(std::move(card));
-		else if (push_pos == push_mode::PUSH_BACK)
-			cards_on_hand.push_back(std::move(card)); 
-	}
-	bool is_dont_have_card() const noexcept { return cards_on_hand.empty(); }
-	card_interface&& to_send_card(const int& idx) {
-		card_interface temp(std::move(cards_on_hand[idx]));
-		cards_on_hand.erase(cards_on_hand.begin(), std::remove(cards_on_hand.begin(), cards_on_hand.end(), temp));
-		return std::move(temp);
-	}
-
-	void move_all_cards_to(card_holder_interface* owner, const push_mode& mode){
-		std::for_each(cards_on_hand.begin(), cards_on_hand.end(), [&owner, &mode](card_interface& card) { owner->to_get_card(std::move(card), mode); });
-		cards_on_hand.clear();
-	}
+	//метод получения карты(добавление к "колоде на руках", т.е. в cards_on_hand)
+	virtual void to_get_card(card_interface&& card, push_mode push_pos);
+	//метод для выявления держателя "пустой колоды"
+	bool is_dont_have_card() const noexcept { return cards_on_hand_.empty(); }
+	//метод выдачи карты из колоды держателя
+	card_interface&& to_send_card(const int& idx);
+	//метод передачи всех карт другому держателю
+	void move_all_cards_to(card_holder_interface* owner, const push_mode& mode);
 
 protected:
-	std::deque<card_interface> cards_on_hand;
+	std::deque<card_interface> cards_on_hand_;
 };
 
 #endif
