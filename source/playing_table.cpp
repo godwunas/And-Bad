@@ -67,6 +67,9 @@ namespace drinker {
 
 		//перетасуем колоду
 		card_deck::getInstance().reset();
+
+		for_each(players_.begin(), players_.end(), [](const std::unique_ptr<player_interface>& pl) { pl->init_name(); });
+
 		//раздадим карты игрокам за столом
 		give_out_cards();
 
@@ -79,14 +82,12 @@ namespace drinker {
 					for_each(players_.begin(), players_.end(), [](const std::unique_ptr<player_interface>& pl) { pl->make_move(); });
 					try {
 						show_table_card();
+
+						last_active_pl_ = get_winner();
 					}
 					catch (bad_card_detected) {	
 						move_all_cards_to(&(card_deck::getInstance()), push_mode::PUSH_BACK);
 						throw bad_game_exception();
-					}
-
-					try {
-						last_active_pl_ = get_winner();
 					}
 					catch (do_not_have_player_owner) {
 						move_all_cards_to(&(card_deck::getInstance()), push_mode::PUSH_BACK);
@@ -111,7 +112,7 @@ namespace drinker {
 	void playing_table::give_out_cards(){
 		while (!card_deck::getInstance().is_dont_have_card()){
 			std::for_each(players_.begin(), players_.end(), [](const std::unique_ptr<player_interface>& pl){
-				pl->to_get_card(card_deck::getInstance().to_send_card(0), push_mode::PUSH_BACK);
+				pl->to_get_card(std::move(card_deck::getInstance().to_send_card(0)), push_mode::PUSH_BACK);
 			});
 		}
 	}
@@ -119,9 +120,12 @@ namespace drinker {
 	void playing_table::show_table_card() const {
 		try {
 			std::for_each(cards_on_hand_.begin() + inactve_cards_count_, cards_on_hand_.end(), [](const card_interface& card) {
-				show_card(card);
+				show_player_name(card.get_owner_player());
+				show_card(card);				
 			});
 		} catch(bad_card_detected){
+			throw;
+		} catch (do_not_have_player_owner){
 			throw;
 		}
 	}

@@ -16,7 +16,7 @@ void card_holder_interface::to_get_card(card_interface&& card, push_mode push_po
 		cards_on_hand_.push_back(std::move(card));
 }
 
-card_interface&& card_holder_interface::to_send_card(const int& idx) {
+card_interface card_holder_interface::to_send_card(const int& idx) {
 	card_interface temp(std::move(cards_on_hand_[idx]));
 	cards_on_hand_.pop_front();//т.к. мы перемещаем обьект, то найти соответствующий в контейнер remove не может, в следствии чего возвращает end, и очищается весь контейнер...пока не понятно как удалять с перемещением из середины...
 	return std::move(temp);

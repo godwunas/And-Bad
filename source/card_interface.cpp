@@ -12,12 +12,14 @@ card_interface::card_interface(uint16_t&& card_num, uint16_t&& card_suit)
 , owner_player_(nullptr)
 {}
 
-card_interface::card_interface(card_interface&& other) {
-	card_num_ = other.card_num_;
-	other.card_num_ = 0;
-
-	card_suit_ = other.card_suit_;
+card_interface::card_interface(card_interface&& other)
+: card_num_(other.card_num_)
+, card_suit_(other.card_suit_)
+, owner_player_(other.owner_player_)
+{
+	other.card_num_ = 0;	
 	other.card_suit_ = 0;
+	other.owner_player_ = nullptr;
 }
 
 card_interface& card_interface::operator=(card_interface&& other) {
@@ -27,6 +29,9 @@ card_interface& card_interface::operator=(card_interface&& other) {
 
 		card_suit_ = other.card_suit_;
 		other.card_suit_ = 0;
+
+		owner_player_ = other.owner_player_;
+		other.owner_player_ = nullptr;
 	}
 
 	return *this;

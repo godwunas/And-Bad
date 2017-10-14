@@ -5,13 +5,13 @@
 #include "card_interface.h"
 #include <io.h>
 #include <fcntl.h>
+#include "player_interface.h"
 
 struct bad_card_detected : std::exception {
 };
 
 void show_card(const card_interface& card) {
 	_setmode(_fileno(stdout), _O_U16TEXT);
-	_setmode(_fileno(stdin), _O_U16TEXT);
 
 	if (card.is_two())
 		std::wcout << 2;
@@ -39,8 +39,10 @@ void show_card(const card_interface& card) {
 		std::wcout << 'K';
 	else if (card.is_tuz())
 		std::wcout << 'T';
-	else
+	else {
+		_setmode(_fileno(stdout), _O_TEXT);
 		throw bad_card_detected();
+	}
 
 	if (card.is_trefles())
 		std::wcout << wchar_t(0x2663);
@@ -50,10 +52,19 @@ void show_card(const card_interface& card) {
 		std::wcout << wchar_t(0x2665);
 	else if (card.is_piques())
 		std::wcout << wchar_t(0x2660);
-	else
+	else {
+		_setmode(_fileno(stdout), _O_TEXT);
 		throw bad_card_detected();
+	}
 
 	std::wcout << std::endl;
+
+	_setmode(_fileno(stdout), _O_TEXT);
 }	
+
+void show_player_name(player_interface* pl) {
+	std::cout << " " << pl->get_name() << std::endl << std::endl;
+}
+
 
 #endif

@@ -11,7 +11,8 @@ namespace drinker{
 		user_player(const user_player&) = delete;
 		user_player& operator =(const user_player&) = delete;
 	public:
-		void make_move();
+		void make_move() override;
+		void init_name() override;
 	};
 }
 

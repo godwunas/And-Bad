@@ -12,6 +12,7 @@ namespace drinker{
 		ai_player& operator =(const ai_player&) = delete;
 	public:
 		void make_move() override;
+		void init_name() override;
 	};
 }
 

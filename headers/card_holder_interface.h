@@ -23,7 +23,7 @@ public:
 	//метод для выявления держателя "пустой колоды"
 	bool is_dont_have_card() const noexcept { return cards_on_hand_.empty(); }
 	//метод выдачи карты из колоды держателя
-	card_interface&& to_send_card(const int& idx);
+	card_interface to_send_card(const int& idx);
 	//метод передачи всех карт другому держателю
 	void move_all_cards_to(card_holder_interface* owner, const push_mode& mode);
 
