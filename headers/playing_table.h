@@ -48,6 +48,7 @@ namespace drinker{
 		void start_game();
 		//метод раздачи карт игрокам
 		void give_out_cards();
+		void show_table_card() const;
 	};
 }
 

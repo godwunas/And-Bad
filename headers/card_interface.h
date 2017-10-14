@@ -15,7 +15,6 @@ struct do_not_have_player_owner : public std::exception {
 };
 
 class card_interface{
-protected:
 	enum card_nums{		
 		two		= 0x000001,
 		three	= 0x000002,
@@ -23,7 +22,7 @@ protected:
 		five	= 0x000008,
 		six		= 0x000010,
 		seven	= 0x000020,
-		eigth	= 0x000040,
+		eight	= 0x000040,
 		nine	= 0x000080,
 		ten		= 0x000100,
 		//face cards
@@ -81,7 +80,7 @@ public:
 	bool is_five()	const noexcept { return card_num_ & card_nums::five ? true : false; }
 	bool is_six()	const noexcept { return card_num_ & card_nums::six ? true : false; }
 	bool is_seven() const noexcept { return card_num_ & card_nums::seven ? true : false; }
-	bool is_eigth() const noexcept { return card_num_ & card_nums::eigth ? true : false; }
+	bool is_eight() const noexcept { return card_num_ & card_nums::eight ? true : false; }
 	bool is_nine()	const noexcept { return card_num_ & card_nums::nine ? true : false; }
 	bool is_ten()	const noexcept { return card_num_ & card_nums::ten ? true : false; }
 	bool is_valet() const noexcept { return card_num_ & card_nums::valet ? true : false; }

@@ -4,8 +4,13 @@
 #include "card_deck.h"
 #include "card_interface.h"
 #include <algorithm>
+#include "console_io_card.h"
+#include <exception>
 
 namespace drinker {
+
+	struct bad_game_exception : std::exception{
+	};
 
 	playing_table* playing_table::single_play_table_ = nullptr;
 	destroy_play_table playing_table::destroy_play_table_;
@@ -65,21 +70,42 @@ namespace drinker {
 		//раздадим карты игрокам за столом
 		give_out_cards();
 
-		//игра идет до выявления одного победителя
-		while (1 < player_in_game){
-			inactve_cards_count_ = 0;
-			do{
-				//каждый игрок делает ход перед сравнением карт
-				for_each(players_.begin(), players_.end(), [](const std::unique_ptr<player_interface>& pl) { pl->make_move(); });
-				last_active_pl_ = get_winner();
-			} while (last_active_pl_ != nullptr);
+		try {
+			//игра идет до выявления одного победителя
+			while (1 < player_in_game) {
+				inactve_cards_count_ = 0;
+				do {
+					//каждый игрок делает ход перед сравнением карт
+					for_each(players_.begin(), players_.end(), [](const std::unique_ptr<player_interface>& pl) { pl->make_move(); });
+					try {
+						show_table_card();
+					}
+					catch (bad_card_detected) {	
+						move_all_cards_to(&(card_deck::getInstance()), push_mode::PUSH_BACK);
+						throw bad_game_exception();
+					}
 
-			//передать все карты со стола игроку-победителю хода
-			move_all_cards_to(last_active_pl_, push_mode::PUSH_BACK);
+					try {
+						last_active_pl_ = get_winner();
+					}
+					catch (do_not_have_player_owner) {
+						move_all_cards_to(&(card_deck::getInstance()), push_mode::PUSH_BACK);
+						throw bad_game_exception();
+					}
+				} while (last_active_pl_ == nullptr);
+
+				//передать все карты со стола игроку-победителю хода
+				move_all_cards_to(last_active_pl_, push_mode::PUSH_BACK);
+			}
+
+			//заберем карты игрока победителя и сдадим в биту
+			last_active_pl_->move_all_cards_to(&(card_deck::GetHeapOutCard()), push_mode::PUSH_BACK);
 		}
-
-		//заберем карты игрока победителя и сдадим в биту
-		last_active_pl_->move_all_cards_to(&(card_deck::GetHeapOutCard()), push_mode::PUSH_BACK);
+		catch (bad_game_exception) {
+			for_each(players_.begin(), players_.end(), [](const std::unique_ptr<player_interface>& pl) {
+				pl->move_all_cards_to(&(card_deck::getInstance()), push_mode::PUSH_BACK);
+			});
+		}		
 	}
 
 	void playing_table::give_out_cards(){
@@ -87,6 +113,16 @@ namespace drinker {
 			std::for_each(players_.begin(), players_.end(), [](const std::unique_ptr<player_interface>& pl){
 				pl->to_get_card(card_deck::getInstance().to_send_card(0), push_mode::PUSH_BACK);
 			});
+		}
+	}
+
+	void playing_table::show_table_card() const {
+		try {
+			std::for_each(cards_on_hand_.begin() + inactve_cards_count_, cards_on_hand_.end(), [](const card_interface& card) {
+				show_card(card);
+			});
+		} catch(bad_card_detected){
+			throw;
 		}
 	}
 }
